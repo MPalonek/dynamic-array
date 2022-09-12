@@ -1,9 +1,10 @@
 #include <gtest/gtest.h> // googletest header file
 
-#include "test/../../app/dynamicArray.h"
+#include "../app/dynamicArray.h"
 
 // ---------------------------------------------------------------------
 // dynamicArray<int> tests
+// ---------------------------------------------------------------------
 
 TEST(dynamicArraySuite, CreateArrayInt)
 {
@@ -51,6 +52,7 @@ TEST(dynamicArraySuite, ReplaceExistingElementWithInsertInt)
 
 // ---------------------------------------------------------------------
 // dynamicArray<double> tests
+// ---------------------------------------------------------------------
 
 TEST(dynamicArraySuite, CreateArrayDouble)
 {

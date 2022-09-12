@@ -1,3 +1,6 @@
+#ifndef DYNAMIC_ARRAY_H
+#define DYNAMIC_ARRAY_H
+
 #include <iostream>
 #include <string>
 #include <stdlib.h>
@@ -54,7 +57,7 @@ T* dynamicArray<T>::allocateArray()
 {
     void* tok = malloc(m_capacity * sizeof(T));
     if (tok == NULL)
-        throw std::exception("Failed to allocate memory when expanding array.");
+        throw std::out_of_range("Failed to allocate memory when expanding array.");
     return (T*)tok;
 }
 
@@ -113,3 +116,5 @@ int dynamicArray<T>::size()
 {
     return m_size;
 }
+
+#endif /* DYNAMIC_ARRAY_H */
