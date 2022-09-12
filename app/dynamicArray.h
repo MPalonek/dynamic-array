@@ -1,3 +1,6 @@
+#ifndef DYNAMIC_ARRAY_H
+#define DYNAMIC_ARRAY_H
+
 #include <iostream>
 #include <string>
 #include <stdlib.h>
@@ -113,3 +116,5 @@ int dynamicArray<T>::size()
 {
     return m_size;
 }
+
+#endif /* DYNAMIC_ARRAY_H */
