@@ -57,7 +57,7 @@ T* dynamicArray<T>::allocateArray()
 {
     void* tok = malloc(m_capacity * sizeof(T));
     if (tok == NULL)
-        throw std::exception("Failed to allocate memory when expanding array.");
+        throw std::out_of_range("Failed to allocate memory when expanding array.");
     return (T*)tok;
 }
 
