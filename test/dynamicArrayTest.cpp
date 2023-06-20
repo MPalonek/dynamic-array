@@ -18,6 +18,16 @@ TEST(dynamicArraySuite, CreateArraySize10Int)
 	EXPECT_EQ(arr.size(), 0);
 }
 
+TEST(dynamicArraySuite, InitilizerListInt)
+{
+	dynamicArray<int> arr {50, 40, 30, 20, 10};
+	EXPECT_EQ(arr[0], 50);
+	EXPECT_EQ(arr[1], 40);
+	EXPECT_EQ(arr[2], 30);
+	EXPECT_EQ(arr[3], 20);
+	EXPECT_EQ(arr[4], 10);
+}
+
 TEST(dynamicArraySuite, AppendElementsInt)
 {
 	dynamicArray<int> arr;
@@ -64,6 +74,16 @@ TEST(dynamicArraySuite, CreateArraySize10Double)
 {
 	dynamicArray<double> arr(10);
 	EXPECT_EQ(arr.size(), 0);
+}
+
+TEST(dynamicArraySuite, InitilizerListDouble)
+{
+	dynamicArray<double> arr{ 5.0, 4.0, 3.0, 2.0, 1.0 };
+	EXPECT_EQ(arr[0], 5.0);
+	EXPECT_EQ(arr[1], 4.0);
+	EXPECT_EQ(arr[2], 3.0);
+	EXPECT_EQ(arr[3], 2.0);
+	EXPECT_EQ(arr[4], 1.0);
 }
 
 TEST(dynamicArraySuite, AppendElementsDouble)
