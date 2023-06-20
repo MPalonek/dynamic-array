@@ -3,27 +3,30 @@
 
 #include <iostream>
 #include <string>
+#include <initializer_list>
 #include <stdlib.h>
 #include <stdexcept>
 
 
-#define INITIAL_CAPACITY 4
+constexpr int initialCapacity{ 4 };
 
 template <class T>
 class dynamicArray
 {
 private:
-    int m_size = 0; //How many elements are in array
-    int m_capacity = INITIAL_CAPACITY; //How big array is internally
-    T* m_arr = nullptr;
+    int m_size{ 0 }; //How many elements are in array
+    int m_capacity{ initialCapacity }; //How big array is internally
+    T* m_arr{ nullptr };
 
     T* allocateArray();
     void expandArray();
 
 public:
-    dynamicArray();
-    dynamicArray(int size);
+    dynamicArray(int size = initialCapacity);
+    dynamicArray(std::initializer_list<T> iList);
     ~dynamicArray();
+    dynamicArray(const dynamicArray&) = delete;         // to avoid shallow copy
+    dynamicArray& operator=(const dynamicArray& rhs);   // to avoid shallow copy
 
     T operator[](int index);
     void append(T elem); //insert at the end
@@ -32,18 +35,21 @@ public:
 };
 
 template <class T>
-dynamicArray<T>::dynamicArray()
+dynamicArray<T>::dynamicArray(int size) : m_capacity{ size }
 {
+    if (size <= 0)
+        throw std::invalid_argument("Array size is 0 or less.");
     m_arr = allocateArray();
 }
 
 template <class T>
-dynamicArray<T>::dynamicArray(int size)
+dynamicArray<T>::dynamicArray(std::initializer_list<T> iList) : dynamicArray(static_cast<int>(iList.size()))
 {
-    if (size <= 0)
-        throw std::invalid_argument("Array size is 0 or less.");
-    m_capacity = size;
-    m_arr = allocateArray();
+    for (int i{ 0 }; const auto& elem : iList)
+    {
+        m_arr[i] = elem;
+        ++i;
+    }
 }
 
 template <class T>
