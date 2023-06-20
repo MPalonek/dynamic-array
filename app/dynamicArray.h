@@ -4,13 +4,12 @@
 #include <iostream>
 #include <string>
 #include <initializer_list>
-#include <stdlib.h>
 #include <stdexcept>
 
 
 constexpr int initialCapacity{ 4 };
 
-template <class T>
+template <typename T>
 class dynamicArray
 {
 private:
@@ -25,16 +24,17 @@ public:
     dynamicArray(int size = initialCapacity);
     dynamicArray(std::initializer_list<T> iList);
     ~dynamicArray();
-    dynamicArray(const dynamicArray&) = delete;         // to avoid shallow copy
-    dynamicArray& operator=(const dynamicArray& rhs);   // to avoid shallow copy
+    dynamicArray(const dynamicArray&) = delete; // to avoid shallow copy
+    dynamicArray& operator=(const dynamicArray& other);
 
-    T operator[](int index);
+    T& operator[](const int index);
+    const T& operator[](const int index) const;
     void append(T elem); //insert at the end
     void insert(T elem, int index);
-    int size();
+    int size() const;
 };
 
-template <class T>
+template <typename T>
 dynamicArray<T>::dynamicArray(int size) : m_capacity{ size }
 {
     if (size <= 0)
@@ -42,55 +42,86 @@ dynamicArray<T>::dynamicArray(int size) : m_capacity{ size }
     m_arr = allocateArray();
 }
 
-template <class T>
+template <typename T>
 dynamicArray<T>::dynamicArray(std::initializer_list<T> iList) : dynamicArray(static_cast<int>(iList.size()))
 {
-    for (int i{ 0 }; const auto& elem : iList)
+    for (const auto& elem : iList)
     {
-        m_arr[i] = elem;
-        ++i;
+        this->append(elem);
     }
 }
 
-template <class T>
+template <typename T>
 dynamicArray<T>::~dynamicArray()
 {
-    free(m_arr);
+    delete[] m_arr;
 }
 
-template <class T>
+template<typename T>
+dynamicArray<T>& dynamicArray<T>::operator=(const dynamicArray& other)
+{
+    // Guard self assignment
+    if (this == &other)
+        return *this;
+
+    // Check can we just reuse the existing space
+    if (m_size != other.m_size)
+    {
+        m_capacity = other.m_capacity;
+        T* tempArr = allocateArray();
+        delete[] m_arr;
+        m_arr = tempArr;
+    }
+
+    for (int i = 0; i < other.m_size; i++)
+    {
+        m_arr[i] = other[i];
+    }
+    m_size = other.m_size;
+
+    return *this;
+}
+
+template <typename T>
 T* dynamicArray<T>::allocateArray()
 {
-    void* tok = malloc(m_capacity * sizeof(T));
-    if (tok == NULL)
-        throw std::out_of_range("Failed to allocate memory when expanding array.");
-    return (T*)tok;
+    return new T[m_capacity];
 }
 
-template <class T>
+template <typename T>
 void dynamicArray<T>::expandArray()
 {
-    m_capacity = m_capacity * 2;
-    T* temp_arr = allocateArray();
+    m_capacity *= 2;
+    T* tempArr = allocateArray();
 
     for (int i = 0; i <= m_size; i++)
     {
-        temp_arr[i] = m_arr[i];
+        tempArr[i] = m_arr[i];
     }
-    free(m_arr);
-    m_arr = temp_arr;
+    
+    delete[] m_arr;
+    m_arr = tempArr;
 }
 
-template <class T>
-T dynamicArray<T>::operator[](int index)
+template <typename T>
+T& dynamicArray<T>::operator[](const int index)
 {
     // prevent buffer overflow attack
-    if ((index < 0) || (index > m_capacity))
+    if ((index < 0) || (index > m_size))
         throw std::out_of_range("Out of array bounds");
     return m_arr[index];
 }
 
-template <class T>
+template <typename T>
+const T& dynamicArray<T>::operator[](const int index) const
+{
+    // prevent buffer overflow attack
+    if ((index < 0) || (index > m_size))
+        throw std::out_of_range("Out of array bounds");
+    return m_arr[index];
+}
+
+template <typename T>
 void dynamicArray<T>::append(T elem)
 {
     // out of memory, expand array
@@ -99,26 +130,32 @@ void dynamicArray<T>::append(T elem)
         expandArray();
     }
 
-    m_arr[m_size] = elem;
-    m_size++;
+    m_arr[m_size++] = elem;
 }
 
-template <class T>
+template <typename T>
 void dynamicArray<T>::insert(T elem, int index)
 {
-    // out of memory, expand array
-    while (index >= m_capacity)
+    if ((index < 0) || (index > m_size))
+        throw std::out_of_range("Out of array bounds");
+
+    // Do we have enough space?
+    if (m_size == m_capacity)
     {
         expandArray();
     }
 
+    // Shift elements from the end
+    for (int i = m_size; i > index; i--)
+    {
+        m_arr[i] = m_arr[i - 1];
+    }
     m_arr[index] = elem;
-    if (index > m_size)
-        m_size = index;
+    m_size++;
 }
 
-template <class T>
-int dynamicArray<T>::size()
+template <typename T>
+int dynamicArray<T>::size() const
 {
     return m_size;
 }
