@@ -34,9 +34,11 @@ public:
 
     T& operator[](const int index);
     const T& operator[](const int index) const;
-    void append(const T elem); //insert at the end
-    void insert(const T elem, const int index);
+    void append(const T& elem); //insert at the end
+    void insert(const T& elem, const int index);
     int size() const;
+    T* begin() const;
+    T* end() const;
 };
 
 template <typename T>
@@ -105,24 +107,23 @@ dynamicArray<T>& dynamicArray<T>::operator=(const dynamicArray& other)
 }
 
 template <typename T>
-dynamicArray<T>::dynamicArray(dynamicArray&& other) noexcept
+dynamicArray<T>::dynamicArray(dynamicArray&& other) noexcept 
+    : m_arr{ other.m_arr }, m_capacity{ other.m_capacity }, m_size{ other.m_size }
 {
-    m_arr = other.m_arr;
-    m_capacity = other.m_capacity;
-    m_size = other.m_size;
-    
     other.m_arr = nullptr;
 }
 
 template <typename T>
 dynamicArray<T>& dynamicArray<T>::operator=(dynamicArray&& other) noexcept
 {
-    delete[] m_arr;
-    m_arr = other.m_arr;
-    m_capacity = other.m_capacity;
-    m_size = other.m_size;
-
-    other.m_arr = nullptr;
+    // Guard self assignment
+    if (this != &other)
+    {
+        dynamicArray<T> tempArr(std::move(other));
+        std::swap(m_arr, tempArr.m_arr);
+        std::swap(m_capacity, tempArr.m_capacity);
+        std::swap(m_size, tempArr.m_size);
+    }
     return *this;
 }
 
@@ -169,7 +170,7 @@ const T& dynamicArray<T>::operator[](const int index) const
 }
 
 template <typename T>
-void dynamicArray<T>::append(const T elem)
+void dynamicArray<T>::append(const T& elem)
 {
     // out of memory, expand array
     if (m_size == m_capacity)
@@ -181,7 +182,7 @@ void dynamicArray<T>::append(const T elem)
 }
 
 template <typename T>
-void dynamicArray<T>::insert(const T elem, const int index)
+void dynamicArray<T>::insert(const T& elem, const int index)
 {
     if ((index < 0) || (index > m_size))
         throw std::out_of_range("Out of array bounds");
@@ -205,6 +206,18 @@ template <typename T>
 int dynamicArray<T>::size() const
 {
     return m_size;
+}
+
+template <typename T>
+T* dynamicArray<T>::begin() const
+{
+    return m_arr;
+}
+
+template <typename T>
+T* dynamicArray<T>::end() const
+{
+    return m_arr + m_size;
 }
 
 #endif /* DYNAMIC_ARRAY_H */
