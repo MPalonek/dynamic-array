@@ -133,6 +133,17 @@ TEST(dynamicArrayIntSuite, InsertElement)
 	EXPECT_EQ(arr[3], 40);
 }
 
+TEST(dynamicArrayIntSuite, InsertElementAtEnd)
+{
+	dynamicArray<int> arr{ 10, 20, 30, 35 };
+	arr.insert(40, 4);
+	EXPECT_EQ(arr[0], 10);
+	EXPECT_EQ(arr[1], 20);
+	EXPECT_EQ(arr[2], 30);
+	EXPECT_EQ(arr[3], 35);
+	EXPECT_EQ(arr[4], 40);
+}
+
 TEST(dynamicArrayIntSuite, ReplaceExistingElement)
 {
 	dynamicArray<int> arr{ 30, 20, 0, 50 };
@@ -141,6 +152,19 @@ TEST(dynamicArrayIntSuite, ReplaceExistingElement)
 	EXPECT_EQ(arr[1], 20);
 	EXPECT_EQ(arr[2], 10);
 	EXPECT_EQ(arr[3], 50);
+}
+
+TEST(dynamicArrayIntSuite, RangeLoop)
+{
+	dynamicArray<int> arr{ 1, 2, 3, 4 };
+	for (auto& elem : arr)
+	{
+		elem = elem * elem;
+	}
+	EXPECT_EQ(arr[0], 1);
+	EXPECT_EQ(arr[1], 4);
+	EXPECT_EQ(arr[2], 9);
+	EXPECT_EQ(arr[3], 16);
 }
 
 // ---------------------------------------------------------------------
@@ -274,6 +298,16 @@ TEST(dynamicArrayDoubleSuite, InsertElements)
 	EXPECT_EQ(arr[3], 0.4);
 }
 
+TEST(dynamicArrayDoubleSuite, InsertElementAtEnd)
+{
+	dynamicArray<double> arr{ 0.1, 0.2, 0.3 };
+	arr.insert(0.4, 3);
+	EXPECT_EQ(arr[0], 0.1);
+	EXPECT_EQ(arr[1], 0.2);
+	EXPECT_EQ(arr[2], 0.3);
+	EXPECT_EQ(arr[3], 0.4);
+}
+
 TEST(dynamicArrayDoubleSuite, ReplaceExistingElement)
 {
 	dynamicArray<double> arr{ 1.5, 3.0, 0.0 };
@@ -281,4 +315,17 @@ TEST(dynamicArrayDoubleSuite, ReplaceExistingElement)
 	EXPECT_EQ(arr[0], 1.5);
 	EXPECT_EQ(arr[1], 3.0);
 	EXPECT_EQ(arr[2], 3.3333);
+}
+
+TEST(dynamicArrayDoubleSuite, RangeLoop)
+{
+	dynamicArray<double> arr{ 1.0, 2.0, 3.0, 4.0 };
+	for (auto& elem : arr)
+	{
+		elem = elem + elem;
+	}
+	EXPECT_EQ(arr[0], 2.0);
+	EXPECT_EQ(arr[1], 4.0);
+	EXPECT_EQ(arr[2], 6.0);
+	EXPECT_EQ(arr[3], 8.0);
 }
